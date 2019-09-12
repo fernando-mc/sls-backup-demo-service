@@ -16,7 +16,8 @@ provider:
         - 'dynamodb:putItem'
       Resource:
         - '*'
-  # credentials: ${secrets:aws-enterprise} # Enter an AWS Secret like this, after you create it in the Dashboard.
+  environment: 
+    PHONE_NUMBER: ${secrets:ALERT_NUMBER}
 
 functions:
   formSubmit:
@@ -27,24 +28,16 @@ functions:
           method: post
           cors: true
 
-resources:
-  Resources:
-    EmailTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: emailTable
-        AttributeDefinitions:
-          - AttributeName: email
-            AttributeType: S
-        KeySchema:
-          - AttributeName: email
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-
-plugins:
-  # - serverless-finch # If you want to deploy the front-end uncomment this and the "custom" object below
-
-# custom:
-  # client:
-    # bucketName: sfe-demo-email-form # If you want to deploy the front-end, change this to a universally unique AWS S3 bucket name
-    # distributionFolder: ../frontend/build
+# resources:
+#   Resources:
+#     EmailTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: emailTable
+#         AttributeDefinitions:
+#           - AttributeName: email
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: email
+#             KeyType: HASH
+#         BillingMode: PAY_PER_REQUEST
