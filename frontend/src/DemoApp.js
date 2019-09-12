@@ -200,7 +200,7 @@ class DemoApp extends Component {
     // Runner Function
     const runner = async (cb) => {
       let array = []
-      for (let i = 0; i <= invocations; i++) { array.push(i) }
+      for (let i = 0; i < invocations; i++) { array.push(i) }
       for (const item of array) {
         await callApi()
         self.setStatus(`Performing API request ${item}/${invocations}...`)
