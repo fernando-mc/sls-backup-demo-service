@@ -1,5 +1,5 @@
-tenant: fernando # Enter your tenant name here
-app: enterprise # Enter your application name here
+org: fernando
+app: enterprise
 service: demo-email-form
 
 frameworkVersion: '>=1.38.0 <2.0.0'
