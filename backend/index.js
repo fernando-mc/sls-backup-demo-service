@@ -2,6 +2,7 @@
  * Form Submit
  */
 
+const https = require('https');
 var AWS = require('aws-sdk');
 AWS.config.update({region:'us-east-1'});
 
@@ -15,28 +16,50 @@ const submit = async (event, context) => {
     throw new Error(`Random error ${r}`)
   }
   
-  // Send a text message with SNS
-  const messageParams = {
-    Message: 'Hello! Someone has submitted your form!',
-    PhoneNumber: process.env.PHONE_NUMBER
+  // Create and delete an SNS Topic
+  try {
+    var createParams = {
+      Name: "newtopic1"
+    }
+    var createResult = await sns.createTopic(createParams).promise()
+    console.log(createResult)
+    var deleteParams = {
+      TopicArn: createResult["TopicArn"]
+    }
+    var deleteResult = await sns.deleteTopic(deleteParams).promise()
+    console.log(deleteResult)
+  } catch (e) {
+    console.log(e, e.stack)
   }
-  await sns.publish(messageParams).promise()
-  console.log('SMS message sent')
 
-  // // Send items to DynamoDB
-  // try {
-  //   const dynamoParams = {
-  //     Item: {
-  //       "email": { S: "fernando@serverless.com" }, 
-  //     }, 
-  //     ReturnConsumedCapacity: "TOTAL", 
-  //     TableName: "emailTable"
-  //   };
-  //   const putData = await dynamodb.putItem(dynamoParams).promise()
-  //   console.log('Put the item in DynamoDB')
-  // } catch (e) {
-  //   console.log(e, e.stack)
-  // }
+  // Make HTTP request
+  await new Promise((resolve, reject) => {
+    const req = https.get({ host: 'www.nokeynoshade.party', path: '/api/queens/89/', method: 'get' }, resp => {
+      let data = '';
+      resp.on('data', chunk => {
+        data += chunk;
+      });
+      resp.on('end', () => {
+        resolve(data);
+      });
+    });
+    req.on('error', reject);
+  });
+
+  // Send items to DynamoDB
+  try {
+    const dynamoParams = {
+      Item: {
+        "email": { S: "fernando@serverless.com" }, 
+      }, 
+      ReturnConsumedCapacity: "TOTAL", 
+      TableName: "emailTable-backup-app"
+    };
+    const putData = await dynamodb.putItem(dynamoParams).promise()
+    console.log('Put the item in DynamoDB')
+  } catch (e) {
+    console.log(e, e.stack)
+  }
 
   const response = {
     statusCode: 200,
