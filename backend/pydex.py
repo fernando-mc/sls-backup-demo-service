@@ -1,6 +1,7 @@
 import boto3
 import requests
 import random
+import json
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('emailTable-backup-app')
