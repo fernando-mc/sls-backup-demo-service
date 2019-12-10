@@ -10,7 +10,7 @@ var sns = new AWS.SNS();
 var dynamodb = new AWS.DynamoDB();
 
 const submit = async (event, context) => {
-
+  context.serverlessSdk.tagEvent('customerId', 5, { newCustomer: true, isDemo: true, demoExpire: '2019-12-01' })
   if (event['queryStringParameters'] && event['queryStringParameters']['error']) {
     let r = Math.random().toString(36).substring(7);
     throw new Error(`Random error ${r}`)
