@@ -10,7 +10,9 @@ sns = boto3.client('sns')
 def process(event,context):
     # Set a random user for this transaction
     user = random.choice(['alice', 'bob', 'charlie', 'david', 'eric', 'fernando'])
-    context.serverless_sdk.tag_event('python-transaction', 'true', {'user': user})
+    user_type = random.choice(['paid', 'free'])
+    context.serverless_sdk.tag_event('plan', user_type, {'optional-data': 'included with the tag', 'guid': '1237r512tye7r561ft7r5ds6a'})
+    context.serverless_sdk.tag_event('user', user, {'optional-data': 'included with the tag', 'guid': '1237r512tye7r561ft7r5ds6a'})
     # Randomly throw errors
     if random.choice([True, False]):
         print("This is where a line of code will break")
